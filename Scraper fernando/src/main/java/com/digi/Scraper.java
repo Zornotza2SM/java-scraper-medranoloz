@@ -1,13 +1,12 @@
 package com.digi;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 public class Scraper {
 
@@ -23,13 +22,16 @@ public class Scraper {
         
         try {
             // Carga el archivo HTML estático localmente
-            File input = new File("index.html");
-            Document doc = Jsoup.parse(input, "UTF-8", ""); 
+            //File input = new File("index.html");
+            //Document doc = Jsoup.parse(input, "UTF-8", ""); 
+
+            Document doc = Jsoup.connect("https://world.digimoncard.com/products/").get();
+
             
             System.out.println("Documento HTML cargado. Iniciando el scraping (Extracción de datos)...");
             
             // 2. Seleccionar todos los contenedores de producto
-            Elements productos = doc.select(".producto"); 
+            Elements productos = doc.select(".proddate"); 
             
             // ----------------------------------------------------
             // FASE 2: Preprocesamiento (Extracción y Limpieza)
@@ -39,10 +41,10 @@ public class Scraper {
             for (Element producto : productos) {
                 
                 // Tarea A: Extraer el título
-                String titulo = producto.select(".titulo-producto").text();
+                String titulo = producto.select(".prodname").text();
                 
                 // Tarea B: Extraer el precio como texto
-                String precioTexto = producto.select(".precio").text();
+                String precioTexto = producto.select(".maker").text();
                 
                 // Tarea C: Limpieza del Dato (EL ALUMNO COMPLETA ESTA LÓGICA)
                 String precioLimpio = precioTexto;
@@ -51,7 +53,7 @@ public class Scraper {
                 //  *** CÓDIGO A COMPLETAR POR EL ALUMNO (SOLUCIÓN DEL PROFESOR ABAJO) ***
                 //  1. Eliminar el símbolo de moneda (" €")
                 //  2. Reemplazar la coma decimal por un punto decimal (para ser compatible con CSV/Números)
-                precioLimpio = precioLimpio.replace(" €", "").replace(",", "."); 
+                precioLimpio = precioLimpio.replace("MSRP", "").replace("USD", "$"); 
                 //  (Opcional: Filtrar precios obviamente erróneos si deseas añadir un reto de limpieza)
                 // ----------------------------------------------------------------------------------
                 

@@ -1,3 +1,4 @@
+
 #!/bin/bash
 # Script para compilar y ejecutar la aplicación Scraper
 
